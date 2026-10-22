@@ -13,44 +13,53 @@ export const authService = {
   },
 
   async login({ email, password }) {
-    if (isSupabaseConfigured) {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-      if (error) throw new Error(error.message);
-
-      // Fetch user profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-
-      const userSession = {
-        id: data.user.id,
-        email: data.user.email,
-        name: profile?.name || data.user.user_metadata?.name || 'User',
-        phone: profile?.phone || '',
-        showPhone: profile?.show_phone ?? false,
-        avatar: profile?.avatar_url || null,
-        role: profile?.role || 'renter',
-        joinedAt: profile?.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
-      };
-
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(userSession));
-      return userSession;
-    }
-
-    // Mock fallback
-    await delay(300);
-    const user = mockUsers.find(
+    // Check if it's one of the pre-configured demo accounts first
+    const demoUser = mockUsers.find(
       (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
     );
-    if (!user) throw new Error('Invalid email or password');
-    const session = sanitize(user);
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return session;
+
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+
+        if (!error && data?.user) {
+          // Fetch user profile from Supabase
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
+
+          const userSession = {
+            id: data.user.id,
+            email: data.user.email,
+            name: profile?.name || data.user.user_metadata?.name || 'User',
+            phone: profile?.phone || '',
+            showPhone: profile?.show_phone ?? false,
+            avatar: profile?.avatar_url || null,
+            role: profile?.role || 'renter',
+            joinedAt: profile?.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+          };
+
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(userSession));
+          return userSession;
+        }
+      } catch (err) {
+        console.warn('Supabase login error, checking demo accounts:', err.message);
+      }
+    }
+
+    // Demo account fallback
+    if (demoUser) {
+      const session = sanitize(demoUser);
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      return session;
+    }
+
+    throw new Error('Invalid email or password');
   },
 
   async signup({ name, email, password }) {

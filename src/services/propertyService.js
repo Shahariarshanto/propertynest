@@ -66,36 +66,41 @@ export const propertyService = {
 
   async create(data, ownerId) {
     if (isSupabaseConfigured) {
-      const { data: inserted, error } = await supabase
-        .from('properties')
-        .insert([
-          {
-            owner_id: ownerId,
-            title: data.title,
-            type: data.type,
-            status: data.status,
-            price: data.price,
-            location: data.location,
-            area: data.area,
-            beds: data.beds,
-            baths: data.baths,
-            floor: data.floor,
-            furnishing: data.furnishing,
-            amenities: data.amenities,
-            images: data.images,
-            description: data.description,
-            available: true,
-            featured: false,
-          },
-        ])
-        .select()
-        .single();
+      try {
+        const { data: inserted, error } = await supabase
+          .from('properties')
+          .insert([
+            {
+              owner_id: ownerId?.startsWith('u') ? null : ownerId,
+              title: data.title,
+              type: data.type,
+              status: data.status,
+              price: data.price,
+              location: data.location,
+              area: data.area,
+              beds: data.beds,
+              baths: data.baths,
+              floor: data.floor,
+              furnishing: data.furnishing,
+              amenities: data.amenities,
+              images: data.images,
+              description: data.description,
+              available: true,
+              featured: false,
+            },
+          ])
+          .select()
+          .single();
 
-      if (error) throw new Error(error.message);
-      return mapFromDB(inserted);
+        if (!error && inserted) {
+          return mapFromDB(inserted);
+        }
+      } catch (err) {
+        console.warn('Supabase create error, saving in-memory:', err.message);
+      }
     }
 
-    await delay(300);
+    await delay(200);
     const newProp = {
       ...data,
       id: `p_${Date.now()}`,
@@ -112,21 +117,33 @@ export const propertyService = {
 
   async update(id, data) {
     if (isSupabaseConfigured) {
-      const dbUpdates = { ...data };
-      delete dbUpdates.id;
-      delete dbUpdates.ownerId;
-      delete dbUpdates.postedAt;
+      try {
+        const dbUpdates = { ...data };
+        delete dbUpdates.id;
+        delete dbUpdates.ownerId;
+        delete dbUpdates.postedAt;
 
-      const { data: updated, error } = await supabase
-        .from('properties')
-        .update(dbUpdates)
-        .eq('id', id)
-        .select()
-        .single();
+        const { data: updated, error } = await supabase
+          .from('properties')
+          .update(dbUpdates)
+          .eq('id', id)
+          .select()
+          .single();
 
-      if (error) throw new Error(error.message);
-      return mapFromDB(updated);
+        if (!error && updated) {
+          return mapFromDB(updated);
+        }
+      } catch (err) {
+        console.warn('Supabase update error, updating in-memory:', err.message);
+      }
     }
+
+    await delay(150);
+    const idx = mockProperties.findIndex((p) => p.id === id);
+    if (idx === -1) throw new Error('Property not found');
+    mockProperties[idx] = { ...mockProperties[idx], ...data };
+    return mockProperties[idx];
+  },
 
     await delay(200);
     const idx = mockProperties.findIndex((p) => p.id === id);
