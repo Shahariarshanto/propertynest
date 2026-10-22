@@ -145,13 +145,6 @@ export const propertyService = {
     return mockProperties[idx];
   },
 
-    await delay(200);
-    const idx = mockProperties.findIndex((p) => p.id === id);
-    if (idx === -1) throw new Error('Property not found');
-    mockProperties[idx] = { ...mockProperties[idx], ...data };
-    return mockProperties[idx];
-  },
-
   async remove(id) {
     if (isSupabaseConfigured) {
       const { error } = await supabase.from('properties').delete().eq('id', id);
