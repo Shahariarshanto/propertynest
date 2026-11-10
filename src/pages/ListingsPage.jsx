@@ -6,8 +6,14 @@ import { PropertyGrid } from '../features/property/PropertyGrid';
 import { SlidersHorizontal, X } from 'lucide-react';
 
 export function ListingsPage() {
-  const { filteredProperties, loading, filters } = useApp();
+  const { filteredProperties, loading, filters, searchQuery, setSearchQuery, updateFilter, resetFilters } = useApp();
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  const hasActiveFilters =
+    filters.type !== 'All' ||
+    filters.status !== 'All' ||
+    filters.beds !== 'Any' ||
+    filters.maxPrice < 15000000;
 
   return (
     <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
@@ -32,7 +38,92 @@ export function ListingsPage() {
             </button>
           </div>
 
-          <SearchBar className="max-w-xl" />
+          <SearchBar className="max-w-2xl" placeholder="Search by area, title, amenities (e.g. Gulshan, WiFi, Studio)..." />
+
+          {/* Active Search & Filter Chips */}
+          {(Boolean(searchQuery) || hasActiveFilters) && (
+            <div className="flex items-center gap-2 flex-wrap text-xs pt-1">
+              <span className="text-gray-400 font-medium">Active:</span>
+
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 font-semibold">
+                  Search: "{searchQuery}"
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="hover:text-brand-900"
+                    title="Remove search"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {filters.type !== 'All' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium">
+                  Type: {filters.type}
+                  <button
+                    type="button"
+                    onClick={() => updateFilter('type', 'All')}
+                    className="hover:text-gray-900"
+                    title="Clear property type filter"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {filters.status !== 'All' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium">
+                  Status: {filters.status}
+                  <button
+                    type="button"
+                    onClick={() => updateFilter('status', 'All')}
+                    className="hover:text-gray-900"
+                    title="Clear status filter"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {filters.beds !== 'Any' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium">
+                  Beds: {filters.beds}
+                  <button
+                    type="button"
+                    onClick={() => updateFilter('beds', 'Any')}
+                    className="hover:text-gray-900"
+                    title="Clear beds filter"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              {filters.maxPrice < 15000000 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium">
+                  Max: ৳{(filters.maxPrice / 100000).toFixed(0)}L
+                  <button
+                    type="button"
+                    onClick={() => updateFilter('maxPrice', 15000000)}
+                    className="hover:text-gray-900"
+                    title="Reset max price"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-brand-600 hover:text-brand-700 font-semibold underline ml-1 cursor-pointer"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
 
           {/* Compact filters bar for mobile/quick toggle */}
           <div className="lg:hidden">

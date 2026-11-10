@@ -57,12 +57,16 @@ export function AppProvider({ children }) {
 
   const filteredProperties = useMemo(() => {
     let result = properties.filter((p) => {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       const matchQuery =
         !q ||
-        p.title.toLowerCase().includes(q) ||
-        p.location.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q);
+        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.location && p.location.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.type && p.type.toLowerCase().includes(q)) ||
+        (p.status && p.status.toLowerCase().includes(q)) ||
+        (p.furnishing && p.furnishing.toLowerCase().includes(q)) ||
+        (Array.isArray(p.amenities) && p.amenities.some((a) => a.toLowerCase().includes(q)));
       const matchType = filters.type === 'All' || p.type === filters.type;
       const matchStatus = filters.status === 'All' || p.status === filters.status;
       const matchPrice = p.price >= filters.minPrice && p.price <= filters.maxPrice;

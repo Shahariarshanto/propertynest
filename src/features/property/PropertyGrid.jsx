@@ -2,9 +2,17 @@ import { useApp } from '../../context/AppContext';
 import { PropertyCard } from './PropertyCard';
 import { SkeletonCard } from '../../components/SkeletonCard';
 import { EmptyState } from '../../components/EmptyState';
+import { RotateCcw } from 'lucide-react';
 
 export function PropertyGrid({ properties, loading, emptyMessage = 'No properties found' }) {
-  const { setIsPostModalOpen } = useApp();
+  const { setIsPostModalOpen, searchQuery, filters, resetFilters } = useApp();
+
+  const isFiltering =
+    Boolean(searchQuery) ||
+    filters.type !== 'All' ||
+    filters.status !== 'All' ||
+    filters.beds !== 'Any' ||
+    filters.maxPrice < 15000000;
 
   if (loading) {
     return (
@@ -18,12 +26,26 @@ export function PropertyGrid({ properties, loading, emptyMessage = 'No propertie
     return (
       <EmptyState
         icon="🔍"
-        title="No properties found"
-        description={emptyMessage}
+        title="No matching properties"
+        description={
+          isFiltering
+            ? `We couldn't find any listings matching your search or filters. Try adjusting your keywords or clearing filters.`
+            : emptyMessage
+        }
         action={
-          <button onClick={() => setIsPostModalOpen(true)} className="btn-brand">
-            Post a Property
-          </button>
+          isFiltering ? (
+            <button
+              onClick={resetFilters}
+              className="btn-brand flex items-center gap-2"
+            >
+              <RotateCcw size={16} />
+              <span>Reset Search & Filters</span>
+            </button>
+          ) : (
+            <button onClick={() => setIsPostModalOpen(true)} className="btn-brand">
+              Post a Property
+            </button>
+          )
         }
       />
     );
