@@ -218,8 +218,8 @@ function Step3({ form, setForm }) {
           images={form.images}
           onChange={(imgs) => setForm((p) => ({ ...p, images: imgs }))}
           maxImages={5}
-          label="Property Photos (ImgBB Hosted)"
-          helperText="Upload photos from your computer or phone — hosted instantly on ImgBB CDN."
+          label="Property Photos"
+          helperText="Upload photos from your computer or phone (first photo will be the cover photo)"
         />
       </div>
     </div>

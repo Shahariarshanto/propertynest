@@ -67,14 +67,14 @@ export function ProfilePage() {
           <User size={16} className="text-brand-500" /> Edit Profile
         </h2>
 
-        {/* Profile Avatar Upload with ImgBB */}
+        {/* Profile Avatar Upload */}
         <ImageUploader
           images={form.avatar ? [form.avatar] : []}
           onChange={(imgs) => setForm((p) => ({ ...p, avatar: imgs[0] || '' }))}
           maxImages={1}
           single={true}
-          label="Profile Photo (ImgBB)"
-          helperText="Upload your personal avatar photo — hosted on ImgBB CDN"
+          label="Profile Photo"
+          helperText=""
         />
 
         <div>

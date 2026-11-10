@@ -301,8 +301,8 @@ export function EditPropertyModal() {
             images={form.images}
             onChange={(imgs) => setField('images', imgs)}
             maxImages={5}
-            label="Property Photos (ImgBB)"
-            helperText="Upload new photos or remove existing ones via ImgBB"
+            label="Property Photos"
+            helperText="Upload new photos or remove existing ones"
           />
         </div>
 

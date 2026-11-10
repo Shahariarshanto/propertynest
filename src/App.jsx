@@ -7,6 +7,7 @@ import { Toast } from './components/Toast';
 import { HomePage } from './pages/HomePage';
 import { ListingsPage } from './pages/ListingsPage';
 import { FavoritesPage } from './pages/FavoritesPage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { ProfilePage } from './features/profile/ProfilePage';
 
 import { AuthModal } from './features/auth/AuthModal';
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/listings" element={<ListingsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>

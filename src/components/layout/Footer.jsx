@@ -13,37 +13,48 @@ export function Footer() {
               <span className="font-bold text-white text-lg">PropertyNest</span>
             </div>
             <p className="text-xs leading-relaxed">
-              Find your perfect home. Browse, compare, and connect with property owners across Bangladesh.
+              Find your perfect home. Browse, compare, and connect directly with property owners across Bangladesh.
             </p>
           </div>
+
           <div>
             <h4 className="text-white font-semibold mb-3 text-sm">Browse</h4>
             <ul className="space-y-2 text-xs">
               <li><Link to="/listings" className="hover:text-white transition-colors">All Properties</Link></li>
-              <li><Link to="/listings?type=Apartment" className="hover:text-white transition-colors">Apartments</Link></li>
-              <li><Link to="/listings?type=House" className="hover:text-white transition-colors">Houses</Link></li>
-              <li><Link to="/listings?type=Commercial" className="hover:text-white transition-colors">Commercial</Link></li>
+              <li><Link to="/listings" className="hover:text-white transition-colors">Apartments</Link></li>
+              <li><Link to="/listings" className="hover:text-white transition-colors">Family Houses</Link></li>
+              <li><Link to="/listings" className="hover:text-white transition-colors">Studios & Rooms</Link></li>
             </ul>
           </div>
+
           <div>
-            <h4 className="text-white font-semibold mb-3 text-sm">Account</h4>
+            <h4 className="text-white font-semibold mb-3 text-sm">Account & Safety</h4>
             <ul className="space-y-2 text-xs">
               <li><Link to="/profile" className="hover:text-white transition-colors">My Profile</Link></li>
               <li><Link to="/favorites" className="hover:text-white transition-colors">Saved Properties</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors text-brand-400 font-medium">Privacy Policy</Link></li>
             </ul>
           </div>
+
           <div>
-            <h4 className="text-white font-semibold mb-3 text-sm">Locations</h4>
+            <h4 className="text-white font-semibold mb-3 text-sm">Popular Areas</h4>
             <ul className="space-y-2 text-xs">
-              {['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi'].map(city => (
-                <li key={city}><span className="hover:text-white transition-colors cursor-pointer">{city}</span></li>
+              {['Gulshan, Dhaka', 'Dhanmondi, Dhaka', 'Uttara, Dhaka', 'Agrabad, Chittagong', 'Zindabazar, Sylhet'].map(city => (
+                <li key={city}><Link to="/listings" className="hover:text-white transition-colors">{city}</Link></li>
               ))}
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs">© 2026 PropertyNest. All rights reserved.</p>
-          <p className="text-xs">Built with React + Tailwind CSS</p>
+
+        <div className="border-t border-gray-800 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <p>© 2026 PropertyNest. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy" className="hover:text-white text-gray-400 transition-colors underline">
+              Privacy Policy
+            </Link>
+            <span className="text-gray-600">•</span>
+            <span>Built with React + Tailwind CSS</span>
+          </div>
         </div>
       </div>
     </footer>

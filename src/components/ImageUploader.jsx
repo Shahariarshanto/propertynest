@@ -6,7 +6,7 @@ export function ImageUploader({
   images = [],
   onChange,
   maxImages = 5,
-  label = 'Property Photos',
+  label = 'Photos',
   helperText = 'Upload high-quality photos (PNG, JPG, WebP up to 32MB)',
   single = false,
 }) {
@@ -103,7 +103,7 @@ export function ImageUploader({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div>
-          <label className="block text-sm font-semibold text-gray-800">{label}</label>
+          {label && <label className="block text-sm font-semibold text-gray-800">{label}</label>}
           {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
         </div>
         <span className="text-xs font-medium text-gray-400">
@@ -147,8 +147,8 @@ export function ImageUploader({
             {uploading ? (
               <>
                 <Loader2 size={32} className="text-brand-600 animate-spin" />
-                <p className="text-sm font-semibold text-brand-700">{uploadProgress || 'Uploading to ImgBB...'}</p>
-                <p className="text-xs text-gray-400">Please wait while your image is hosted</p>
+                <p className="text-sm font-semibold text-brand-700">{uploadProgress || 'Uploading image...'}</p>
+                <p className="text-xs text-gray-400">Please wait while your image is uploading</p>
               </>
             ) : (
               <>
@@ -160,7 +160,7 @@ export function ImageUploader({
                     <span className="text-brand-600 underline">Click to upload</span> or drag & drop
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    Images are hosted securely on ImgBB CDN
+                    Supports PNG, JPG, WebP up to 32MB
                   </p>
                 </div>
               </>
