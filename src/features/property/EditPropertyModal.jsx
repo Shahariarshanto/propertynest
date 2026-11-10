@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal } from '../../components/Modal';
 import { useApp } from '../../context/AppContext';
+import { ImageUploader } from '../../components/ImageUploader';
 import { Loader2, Save, X, Plus } from 'lucide-react';
 
 const TYPES = ['Apartment', 'House', 'Studio', 'Room', 'Commercial'];
@@ -31,7 +32,7 @@ export function EditPropertyModal() {
         floor: String(editingProperty.floor ?? '1'),
         furnishing: editingProperty.furnishing || 'Semi-Furnished',
         amenities: editingProperty.amenities ? [...editingProperty.amenities] : [],
-        images: editingProperty.images ? [...editingProperty.images] : [''],
+        images: editingProperty.images ? [...editingProperty.images] : [],
         description: editingProperty.description || '',
         available: editingProperty.available ?? true,
       });
@@ -53,31 +54,11 @@ export function EditPropertyModal() {
     }));
   };
 
-  const handleImageChange = (index, value) => {
-    setForm((p) => {
-      const nextImages = [...p.images];
-      nextImages[index] = value;
-      return { ...p, images: nextImages };
-    });
-  };
-
-  const addImageField = () => {
-    if (form.images.length < 5) {
-      setForm((p) => ({ ...p, images: [...p.images, ''] }));
-    }
-  };
-
-  const removeImageField = (index) => {
-    setForm((p) => ({
-      ...p,
-      images: p.images.filter((_, i) => i !== index),
-    }));
-  };
-
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
+      const validImages = form.images.filter(Boolean);
       const updatedData = {
         ...form,
         price: Number(form.price),
@@ -85,9 +66,7 @@ export function EditPropertyModal() {
         baths: Number(form.baths),
         area: Number(form.area),
         floor: Number(form.floor),
-        images: form.images.filter(Boolean).length > 0
-          ? form.images.filter(Boolean)
-          : editingProperty.images,
+        images: validImages.length > 0 ? validImages : editingProperty.images,
       };
 
       await updateProperty(editingProperty.id, updatedData);
@@ -127,7 +106,7 @@ export function EditPropertyModal() {
                 : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
             }`}
           >
-            {form.available ? '● Live / Available' : '○ Rented / Inactive'}
+            {form.available ? '✅ Live / Available' : '🔒 Rented / Inactive'}
           </button>
         </div>
 
@@ -148,9 +127,9 @@ export function EditPropertyModal() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Property Type</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Type</label>
               <select
                 className="input-field text-sm"
                 value={form.type}
@@ -161,6 +140,7 @@ export function EditPropertyModal() {
                 ))}
               </select>
             </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
               <select
@@ -173,6 +153,20 @@ export function EditPropertyModal() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Location *</label>
+              <input
+                type="text"
+                required
+                className="input-field text-sm"
+                value={form.location}
+                onChange={(e) => setField('location', e.target.value)}
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">
                 Price (BDT{form.status === 'For Rent' ? '/month' : ''}) *
@@ -186,17 +180,6 @@ export function EditPropertyModal() {
                 onChange={(e) => setField('price', e.target.value)}
               />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Location *</label>
-            <input
-              type="text"
-              required
-              className="input-field text-sm"
-              value={form.location}
-              onChange={(e) => setField('location', e.target.value)}
-            />
           </div>
 
           <div>
@@ -214,7 +197,7 @@ export function EditPropertyModal() {
         {/* Property Specs */}
         <div className="space-y-4">
           <h3 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-2">
-            Specifications
+            Property Details
           </h3>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -309,43 +292,18 @@ export function EditPropertyModal() {
           </div>
         </div>
 
-        {/* Photos */}
+        {/* Photos (ImgBB Upload) */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <h3 className="text-sm font-bold text-gray-900">Photo URLs</h3>
-            {form.images.length < 5 && (
-              <button
-                type="button"
-                onClick={addImageField}
-                className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1 font-semibold"
-              >
-                <Plus size={14} /> Add photo
-              </button>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            {form.images.map((url, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <input
-                  type="url"
-                  placeholder={`Photo ${i + 1} URL`}
-                  className="input-field text-xs py-2 flex-1"
-                  value={url}
-                  onChange={(e) => handleImageChange(i, e.target.value)}
-                />
-                {form.images.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeImageField(i)}
-                    className="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-gray-100"
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <h3 className="text-sm font-bold text-gray-900 border-b border-gray-100 pb-2">
+            Listing Photos
+          </h3>
+          <ImageUploader
+            images={form.images}
+            onChange={(imgs) => setField('images', imgs)}
+            maxImages={5}
+            label="Property Photos (ImgBB)"
+            helperText="Upload new photos or remove existing ones via ImgBB"
+          />
         </div>
 
         {/* Form Actions */}

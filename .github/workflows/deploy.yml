@@ -36,6 +36,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://xhtetoshfsrjlixjsllz.supabase.co' }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_emg9-x03U2n3587WEX4lIg_0YQlsnmE' }}
+          VITE_IMGBB_API_KEY: ${{ secrets.VITE_IMGBB_API_KEY || 'e7f38d76a3467d93200d066b34e7f849' }}
 
       # 1. Deploy via GitHub Actions Pages
       - name: Setup Pages
