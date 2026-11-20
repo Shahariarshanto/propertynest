@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { PropertyCard } from '../property/PropertyCard';
 import { SkeletonCard } from '../../components/SkeletonCard';
 import { ArrowRight, Flame } from 'lucide-react';
 
 export function FeaturedSection() {
   const { properties, loading } = useApp();
+  const { t } = useLanguage();
 
   const featured = properties.filter((p) => p.featured).slice(0, 6);
 
@@ -17,15 +19,17 @@ export function FeaturedSection() {
           <div>
             <div className="flex items-center gap-2 text-earth-700 font-semibold text-xs tracking-wider uppercase mb-1">
               <Flame size={16} className="text-earth-600" />
-              <span>Handpicked For You</span>
+              <span>{t('featured_badge')}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Featured Listings</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              {t('featured_title')}
+            </h2>
           </div>
           <Link
             to="/listings"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 group"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-600 hover:text-brand-700 group"
           >
-            <span>View All</span>
+            <span>{t('view_all')}</span>
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

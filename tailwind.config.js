@@ -30,7 +30,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Hind Siliguri"', 'Inter', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         slideInRight: {
@@ -41,27 +41,17 @@ export default {
           '0%':   { transform: 'translateX(-100%)', opacity: '0' },
           '100%': { transform: 'translateX(0)',     opacity: '1' },
         },
-        slideInUp: {
-          '0%':   { transform: 'translateY(40px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)',    opacity: '1' },
-        },
-        fadeIn: {
-          '0%':   { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
         shimmer: {
           '0%':   { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition:  '200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
       },
       animation: {
-        'slide-in-right': 'slideInRight 0.3s ease-out',
-        'slide-in-left':  'slideInLeft 0.3s ease-out',
-        'slide-in-up':    'slideInUp 0.35s ease-out',
-        'fade-in':        'fadeIn 0.2s ease-in',
-        'shimmer':        'shimmer 1.5s infinite linear',
+        'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-in-left':  'slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'shimmer':        'shimmer 1.5s infinite',
       },
     },
   },
   plugins: [],
-}
+};

@@ -60,7 +60,7 @@ export function AppProvider({ children }) {
       const q = searchQuery.toLowerCase().trim();
       const matchQuery =
         !q ||
-        (p.title && p.title.toLowerCase().includes(q)) ||
+        (p.title && p.title.toLowerCase().includes(q)) || (p.titleBn && p.titleBn.toLowerCase().includes(q)) ||
         (p.location && p.location.toLowerCase().includes(q)) ||
         (p.description && p.description.toLowerCase().includes(q)) ||
         (p.type && p.type.toLowerCase().includes(q)) ||
@@ -78,14 +78,32 @@ export function AppProvider({ children }) {
       return matchQuery && matchType && matchStatus && matchPrice && matchBeds && matchLocation;
     });
 
-    // Sort
+    // Sort (rating removed)
     if (filters.sortBy === 'price_asc') result = result.sort((a, b) => a.price - b.price);
     else if (filters.sortBy === 'price_desc') result = result.sort((a, b) => b.price - a.price);
-    else if (filters.sortBy === 'rating') result = result.sort((a, b) => b.rating - a.rating);
     else result = result.sort((a, b) => new Date(b.postedAt) - new Date(a.postedAt));
 
     return result;
   }, [properties, searchQuery, filters]);
+
+  // ── Pagination / chunked rendering ────────────────────────────────────────
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  // Reset visible count when search/filters change
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [searchQuery, filters]);
+
+  const paginatedProperties = useMemo(
+    () => filteredProperties.slice(0, visibleCount),
+    [filteredProperties, visibleCount]
+  );
+
+  const hasMore = visibleCount < filteredProperties.length;
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((prev) => prev + 12);
+  }, []);
 
   // ── Favorites ──────────────────────────────────────────────────────────────
   const [favoriteIds, setFavoriteIds] = useState([]);
@@ -165,6 +183,9 @@ export function AppProvider({ children }) {
       value={{
         properties,
         filteredProperties,
+        paginatedProperties,
+        hasMore,
+        loadMore,
         loading,
         searchQuery,
         setSearchQuery,
