@@ -257,14 +257,6 @@ export function PropertyModal() {
             <MessageSquare size={18} />
             <span>{t('modal_chat_btn')}</span>
           </button>
-
-          {/* Contact Form */}
-          <div>
-            <h3 className="font-bold text-gray-800 mb-3">
-              {isBn ? 'সরাসরি ইনকোয়ারি পাঠান' : 'Send an Inquiry'}
-            </h3>
-            <ContactForm property={p} />
-          </div>
         </div>
       </div>
     </Modal>
